@@ -1,5 +1,6 @@
 import { IMeta } from 'src/utils/paginate';
 import { IResponse } from '../interfaces/response.interface';
+import { HttpException } from '@nestjs/common';
 
 export class BaseService {
   public healthCheck(name: string): IResponse<string> {
@@ -19,15 +20,18 @@ export class BaseService {
   }
 
   protected error(message: string, statusCode: number = 400): IResponse<null> {
-    return {
-      statusCode,
-      success: false,
-      message,
-      data: null,
-      metadata: {
-        timestamp: new Date().toISOString(),
+    throw new HttpException(
+      {
+        statusCode,
+        success: false,
+        message,
+        data: null,
+        metadata: {
+          timestamp: new Date().toISOString(),
+        },
       },
-    };
+      statusCode,
+    );
   }
 
   protected paginate<T>(
